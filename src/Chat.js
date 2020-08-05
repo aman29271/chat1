@@ -170,7 +170,7 @@ class Chat {
     document.getElementById("name").addEventListener("keyup", loginHandler, false);
     document.getElementById("btnSend").addEventListener("click", sendMessageHander, false);
     messageInput.addEventListener("keyup", sendMessageHander, false);
-    messageInput.addEventListener("keypress", () => {
+    messageInput.addEventListener("input", () => {
       that.socket.emit("postMsg", { msg: "", typing: true });
     });
     cameraBtn.addEventListener("click", () => {
@@ -277,7 +277,7 @@ class Chat {
           const img = new Image();
           img.onload = function () {
             ["has-text-left", "is-size-6", "left-aligned"].forEach((e) => HTML.classList.add(e));
-            HTML.innerHTML = `<img src="${msg.img}">`;
+            HTML.innerHTML = `<img src="${img.src}">`;
             container.appendChild(HTML);
           };
           img.src = msg.img;
@@ -299,7 +299,7 @@ class Chat {
         const img = new Image();
         img.onload = function () {
           ["has-text-right", "is-size-6", "right-aligned"].forEach((e) => HTML.classList.add(e));
-          HTML.innerHTML = `<img src="${msg.img}">`;
+          HTML.innerHTML = `<img src="${img.src}">`;
           container.appendChild(HTML);
         };
         img.src = msg.img;

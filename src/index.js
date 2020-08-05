@@ -13,6 +13,7 @@ const priorityQueue = [];
 let userCount = 0;
 let pairCount = 0;
 const sockets = {};
+var timer;
 
 app.use(express.static(path.resolve(__dirname, "../build")));
 
@@ -22,10 +23,8 @@ server.listen(PORT, () => {
 
 io.sockets.on("connection", function (socket) {
   //new user login
-  let timer;
   userCount++;
   io.sockets.emit("system", userCount);
-  console.log("connected", socket.id);
   socket.on("login", function (nickname) {
     //socket.userIndex = users.length;
     sockets[socket.id] = socket;
@@ -49,12 +48,11 @@ io.sockets.on("connection", function (socket) {
           otherUserSocket.emit("notification", "Your Partner left.", "danger");
           cleanupPair(otherUserSocket);
           delete sockets[socket.id];
-        }, 5000);
+        }, 10000);
       } else {
         delete sockets[socket.id];
       }
     }
-    console.log("disconnected", socket.id);
     userCount--;
     socket.broadcast.emit("system", userCount);
   });
@@ -79,7 +77,7 @@ io.sockets.on("connection", function (socket) {
         cleanupPair(socket);
         cleanupPair(sockets[otherSocketId]);
         pairing(socket.id, otherSocketId, false);
-        socket.emit("remove notification");
+        sockets[socket.otherUserId].emit("remove notification");
       }
     } else {
       if (typeof Id !== "undefined") {
